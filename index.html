@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo Telegram Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    html,body {
+      background: #f7f6f2;
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    #container {
+      max-width: 420px;
+      margin: 0 auto;
+      background: #fff9f4;
+      border-radius: 26px;
+      box-shadow: 0 2px 24px #e4dacb55;
+      padding: 24px 18px 18px 18px;
+      min-height: 98vh;
+      box-sizing: border-box;
+    }
+    .logo { font-size: 2.2em; margin-bottom: 12px; }
+    h1 { font-size: 1.35em; margin: 0 0 8px; }
+    .menu, .faq-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;}
+    .menu-btn, .faq-btn, .action-btn {
+      flex: 1 1 45%;
+      background: #fff;
+      border: 2px solid #efd6be;
+      color: #4c3f32;
+      border-radius: 18px;
+      padding: 14px 0 12px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 6px;
+      transition: 0.12s;
+      box-shadow: 0 0.5px 2.5px #efd6be4d;
+    }
+    .menu-btn:active, .faq-btn:active, .action-btn:active { background: #ffe7c6; }
+    .action-btn { background: #229ed9; color: #fff; border: none; margin: 18px 0 0 0; width: 90%; }
+    .back-btn { margin: 16px auto 0; display: block; background: #e8e8e8; color: #776150; border: none; }
+    .section { display: none; animation: fadein .15s; }
+    .visible { display: block; }
+    .center { text-align: center; }
+    .faq-ans { margin-bottom: 8px; }
+    a { color: #229ed9; text-decoration: none; font-weight: 600; }
+    @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div class="logo center">👗 <b>ARCHU & NAZAROV</b></div>
+    <!-- Главное меню -->
+    <div id="main-menu" class="section visible">
+      <div class="menu">
+        <button class="menu-btn" onclick="showSection('catalog')">📦 Каталог</button>
+        <button class="menu-btn" onclick="showSection('lookbook')">📸 Лукбуки</button>
+        <button class="menu-btn" onclick="showSection('faq')">📋 FAQ</button>
+        <button class="menu-btn" onclick="showSection('support')">💬 Поддержка</button>
+        <button class="menu-btn" onclick="showSection('subscribe')">💳 Подписка</button>
+        <button class="menu-btn" onclick="showSection('about')">📣 О нас</button>
+      </div>
+    </div>
+    <!-- Каталог -->
+    <div id="catalog" class="section">
+      <h1>📦 Каталог</h1>
+      <div class="menu">
+        <button class="menu-btn" onclick="showCatalog('dresses')">👗 Платья</button>
+        <button class="menu-btn" onclick="showCatalog('tops')">👚 Верх</button>
+        <button class="menu-btn" onclick="showCatalog('bottoms')">🩳 Низ</button>
+      </div>
+      <button class="action-btn" onclick="window.open('https://t.me/archu_support', '_blank')">🤖 Заказать бот</button>
+      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
+      <div id="catalog-item" class="center" style="margin-top:16px;"></div>
+    </div>
+    <!-- Лукбуки -->
+    <div id="lookbook" class="section">
+      <h1>📸 Лукбук сезона</h1>
+      <div style="margin-bottom:12px;">
+        1️⃣ <b>City Lights</b> — костюм + платье<br>
+        <a href="https://archu.ru/lookbook1" target="_blank">👁 Смотреть</a>
+      </div>
+      <div>
+        2️⃣ <b>Desert Rose</b> — топ + юбка<br>
+        <a href="https://archu.ru/lookbook2" target="_blank">👁 Смотреть</a>
+      </div>
+      <button class="action-btn" onclick="window.open('https://t.me/archu_support', '_blank')">🤖 Заказать бот</button>
+      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
+    </div>
+    <!-- FAQ -->
+    <div id="faq" class="section">
+      <h1>📋 Частые вопросы</h1>
+      <div id="faq-list" class="faq-list"></div>
+      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
+    </div>
+    <div id="faq-ans" class="section">
+      <div class="faq-ans"></div>
+      <button class="back-btn" onclick="showSection('faq')">⬅️ Назад к FAQ</button>
+    </div>
+    <!-- Поддержка -->
+    <div id="support" class="section">
+      <h1>💬 Поддержка</h1>
+      <div class="center" style="margin-bottom:18px;">
+        Напишите нам в <a href="https://t.me/archu_support" target="_blank">Telegram</a> — менеджер ответит лично!
+      </div>
+      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
+    </div>
+    <!-- Подписка -->
+    <div id="subscribe" class="section">
+      <h1>🥳 Демо-подписка активирована!</h1>
+      <div class="center" style="margin-bottom:16px;">
+        • Доступ к закрытым материалам<br>
+        • Оповещения о новинках<br>
+        • Личный менеджер<br><br>
+        Попробуй такого бота для бизнеса 👇
+      </div>
+      <button class="action-btn" onclick="window.open('https://t.me/archu_support', '_blank')">🤖 Заказать бот</button>
+      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
+    </div>
+    <!-- О нас -->
+    <div id="about" class="section">
+      <h1>🌟 О нас</h1>
+      <div class="center" style="margin-bottom:18px;">
+        ARCHU & NAZAROV — digital-креаторы и it-разработчики.<br>
+        Делаем Telegram-боты для продаж и автоматизации.<br><br>
+        Хотите такой же бот для бизнеса? 👇
+      </div>
+      <button class="action-btn" onclick="window.open('https://t.me/archu_support', '_blank')">🤖 Заказать бот</button>
+      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
+    </div>
+  </div>
+
+  <script>
+    // FAQ
+    const faqQuestions = [
+      "Как выбрать размер? 🧵", "Какая доставка? 🚚",
+      "Как оформить возврат? ↩️", "Какая ткань используется? 🌿",
+      "Что входит в комплект? 📦", "Как ухаживать за изделием? 🫧",
+      "Как заказать индивидуальный пошив? 👗", "Есть ли скидки? 🎁",
+      "Как отследить заказ? 🔍", "Какие способы оплаты? 💳",
+      "Есть примерка? 🛍️", "Где производится одежда? 🏭",
+      "Можно изменить заказ? ✏️", "Контакты для связи ☎️"
+    ];
+    const faqAnswers = [
+      "🧵 <b>Как выбрать размер?</b><br>Стандартная размерная сетка. Если не уверены — напишите нам в поддержку 💬",
+      "🚚 <b>Доставка</b><br>По всей РФ и СНГ курьером или почтой. Подробнее — на сайте!",
+      "↩️ <b>Возврат</b><br>Товар можно вернуть в течение 14 дней. Просто напишите в поддержку 👩‍💻",
+      "🌿 <b>Ткань</b><br>Только натуральные и премиальные материалы.",
+      "📦 <b>Комплектация</b><br>Товар + инструкция по уходу. Аксессуары — отдельно.",
+      "🫧 <b>Уход</b><br>Ручная стирка, низкие температуры, без отбеливателей.",
+      "👗 <b>Индпошив</b><br>Оставьте заявку в поддержке — дизайнер свяжется с вами!",
+      "🎁 <b>Скидки</b><br>Скидки постоянным и оптовым клиентам. Следите за акциями!",
+      "🔍 <b>Отслеживание</b><br>После отправки выдаём трек-номер.",
+      "💳 <b>Оплата</b><br>Карты, ЮMoney, СБП. Опт — по счёту.",
+      "🛍️ <b>Примерка</b><br>Шоу-рум в Москве — записаться у менеджера.",
+      "🏭 <b>Производство</b><br>Всё шьём сами в России.",
+      "✏️ <b>Изменения</b><br>Пока не отправлено — можно менять. Напишите нам!",
+      "☎️ <b>Контакты</b><br>@archu_support или info@archu.ru"
+    ];
+
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+      document.getElementById(id).classList.add('visible');
+      if(id==="catalog") {
+        document.getElementById('catalog-item').innerHTML = "";
+      }
+    }
+
+    // Каталог
+    function showCatalog(cat) {
+      let html = "";
+      if(cat==="dresses") {
+        html = "👗 <b>Spring Bloom</b><br><br>Лёгкое платье из вискозы<br>💸 <b>Цена:</b> 8990₽<br><a href='https://archu.ru/dresses/1' target='_blank'>👁 Подробнее</a>";
+      } else if(cat==="tops") {
+        html = "👚 <b>Minimal Top</b><br><br>Классика & комфорт<br>💸 <b>Цена:</b> 4990₽<br><a href='https://archu.ru/tops/1' target='_blank'>👁 Подробнее</a>";
+      } else if(cat==="bottoms") {
+        html = "🩳 <b>Urban Skirt</b><br><br>Юбка с разрезом<br>💸 <b>Цена:</b> 5990₽<br><a href='https://archu.ru/bottoms/1' target='_blank'>👁 Подробнее</a>";
+      }
+      document.getElementById('catalog-item').innerHTML = "<div style='margin:18px 0 0 0;'>" + html + "</div>";
+    }
+
+    // FAQ — меню и ответы
+    function renderFAQ() {
+      let html = "";
+      for (let i = 0; i < faqQuestions.length; i++) {
+        html += `<button class="faq-btn" onclick="showFaqAns(${i})">${faqQuestions[i]}</button>`;
+      }
+      document.getElementById('faq-list').innerHTML = html;
+    }
+    function showFaqAns(i) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+      document.getElementById('faq-ans').classList.add('visible');
+      document.querySelector('.faq-ans').innerHTML = faqAnswers[i];
+    }
+    renderFAQ();
+
+    // Если открыт в Telegram Mini App — уведомим Telegram
+    if(window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
+  </script>
+</body>
+</html>
