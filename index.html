@@ -2,202 +2,348 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Demo Telegram Mini App</title>
+  <title>ARCHU & NAZAROV — Digital Fashion Bot Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --accent: linear-gradient(90deg, #fcb37d, #ff74ae 60%, #b6b2ff 100%);
+      --bg: #fcf7f2;
+      --card: #fff;
+      --shadow: 0 4px 24px 0 #c29db822, 0 0.5px 2px #fff2;
+      --radius: 2.2em;
+      --text-main: #2e1c23;
+      --text-faint: #958591;
+      --btn: #fd89a5;
+      --btn2: #ffc376;
+      --btntext: #fff;
+    }
     html,body {
-      background: #f7f6f2;
-      margin: 0; padding: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      color: var(--text-main);
+      font-size: 17px;
+      scroll-behavior: smooth;
     }
-    #container {
-      max-width: 420px;
-      margin: 0 auto;
-      background: #fff9f4;
-      border-radius: 26px;
-      box-shadow: 0 2px 24px #e4dacb55;
-      padding: 24px 18px 18px 18px;
-      min-height: 98vh;
-      box-sizing: border-box;
+    a { color: var(--btn); text-decoration: none; transition: .2s; }
+    a:hover { color: #d269c8; }
+    .wrapper { max-width: 430px; margin: 0 auto; padding: 0 0 44px; }
+    header {
+      padding: 38px 0 18px;
+      text-align: center;
     }
-    .logo { font-size: 2.2em; margin-bottom: 12px; }
-    h1 { font-size: 1.35em; margin: 0 0 8px; }
-    .menu, .faq-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;}
-    .menu-btn, .faq-btn, .action-btn {
-      flex: 1 1 45%;
-      background: #fff;
-      border: 2px solid #efd6be;
-      color: #4c3f32;
-      border-radius: 18px;
-      padding: 14px 0 12px;
+    .logo-3d {
+      font-size: 2.5em;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 14px #fcb37d33);
+      margin-bottom: 8px;
+    }
+    .desc {
+      color: var(--text-faint);
+      font-size: 1.03em;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+    }
+    nav {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 24px 0 26px;
+    }
+    nav button {
+      flex: 1 1 30%;
+      padding: 13px 0;
+      border: none;
+      border-radius: 1.4em;
+      font-size: 1.07em;
+      font-weight: 600;
+      background: var(--accent);
+      color: var(--btntext);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: .14s;
+      outline: none;
+      margin: 0 0.5px;
+      letter-spacing: 0.05em;
+    }
+    nav button.selected,
+    nav button:active {
+      box-shadow: 0 2px 14px #ffae8a33;
+      filter: brightness(1.09);
+    }
+    .section { display: none; animation: fadein .22s; }
+    .section.active { display: block; }
+    @keyframes fadein { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+    /* Каталог */
+    .card-list { display: flex; flex-direction: column; gap: 18px; }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex; flex-direction: row; align-items: center;
+      gap: 18px;
+      padding: 0 20px 0 0;
+      transition: .16s;
+      min-height: 124px;
+      border: 2px solid #ffe9c7;
+    }
+    .card img {
+      width: 88px; height: 98px;
+      object-fit: cover;
+      border-radius: 1.3em 1.3em 2em 2em;
+      margin-left: 12px;
+      filter: drop-shadow(0 2px 6px #fcba7d44);
+      background: #fce4d1;
+    }
+    .card .c-content {
+      flex:1;
+      padding: 14px 0;
+      min-width: 0;
+    }
+    .c-title { font-size: 1.18em; font-weight: 700; margin-bottom: 3px; }
+    .c-desc { color: var(--text-faint); margin-bottom: 7px; font-size: 1em; }
+    .c-price { color: #ff74ae; font-size: 1.07em; margin-bottom: 9px; }
+    .c-link {
+      background: var(--btn2);
+      color: var(--text-main);
+      font-weight: 700;
+      padding: 7px 18px;
+      border-radius: 1.3em;
+      border: none;
+      cursor: pointer;
+      transition: .13s;
+      margin-left: 0;
+      box-shadow: 0 2px 9px #ffe4d1aa;
+      text-decoration: none;
+      font-size: 1em;
+      letter-spacing: 0.03em;
+      outline: none;
+      display: inline-block;
+    }
+    .c-link:hover { background: var(--btn); color: var(--btntext);}
+    /* Lookbook */
+    .lookbook-list { display: flex; flex-direction: column; gap: 18px; }
+    .lookbook-card {
+      background: linear-gradient(112deg, #ffe8ef 0%, #fdf0e6 100%);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin: 0 1px;
+    }
+    .lookbook-img {
+      width: 100%; height: 170px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(1.04) saturate(1.05);
+    }
+    .lookbook-title {
+      font-size: 1.15em; font-weight: 700;
+      padding: 11px 17px 7px;
+      color: #c95698;
+    }
+    .lookbook-desc {
+      color: var(--text-faint);
+      font-size: 1em;
+      padding: 0 17px 13px;
+    }
+    .lb-link {
+      background: var(--btn2);
+      color: var(--text-main);
+      padding: 6px 20px;
+      margin: 10px 0 17px 17px;
+      border-radius: 1.2em;
+      border: none;
       font-size: 1em;
       font-weight: 600;
       cursor: pointer;
-      margin-bottom: 6px;
-      transition: 0.12s;
-      box-shadow: 0 0.5px 2.5px #efd6be4d;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 2px 7px #ffe4d1aa;
+      transition: .14s;
     }
-    .menu-btn:active, .faq-btn:active, .action-btn:active { background: #ffe7c6; }
-    .action-btn { background: #229ed9; color: #fff; border: none; margin: 18px 0 0 0; width: 90%; }
-    .back-btn { margin: 16px auto 0; display: block; background: #e8e8e8; color: #776150; border: none; }
-    .section { display: none; animation: fadein .15s; }
-    .visible { display: block; }
-    .center { text-align: center; }
-    .faq-ans { margin-bottom: 8px; }
-    a { color: #229ed9; text-decoration: none; font-weight: 600; }
-    @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+    .lb-link:hover { background: var(--btn); color: var(--btntext);}
+    /* О нас */
+    .about {
+      background: #fff4e7;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 22px 18px;
+      margin: 0 0 20px;
+      text-align: center;
+    }
+    .about .team-logo {
+      width: 68px; border-radius: 1em; margin-bottom: 10px; background: #fff; box-shadow: 0 2px 12px #ffd2d2a0;
+    }
+    .about h2 { margin: 7px 0 10px; font-size: 1.3em;}
+    .about p { color: #9e8f9e; font-size: 1.05em; }
+    .about .socials {
+      margin-top: 14px;
+    }
+    .about .socials a {
+      background: var(--accent);
+      color: #fff;
+      font-size: 1.1em;
+      padding: 8px 19px;
+      border-radius: 1.3em;
+      margin: 0 7px;
+      box-shadow: 0 2px 10px #ffd2d2a0;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: .12s;
+      display: inline-block;
+    }
+    .about .socials a:hover { filter: brightness(1.2);}
+    /* Подвал */
+    footer {
+      text-align: center;
+      padding: 30px 0 13px;
+      color: #b89fb7;
+      font-size: 0.99em;
+      letter-spacing: 0.02em;
+      background: transparent;
+    }
+    .cta {
+      text-align: center;
+      margin: 33px 0 16px;
+    }
+    .cta-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 1.6em;
+      font-size: 1.15em;
+      font-weight: 700;
+      padding: 15px 38px;
+      box-shadow: 0 5px 24px #ffd2d2a0;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: .13s;
+      outline: none;
+    }
+    .cta-btn:hover { background: #fcb37d; color: #fff;}
+    @media (max-width:480px){
+      .wrapper{padding:0;}
+      header{padding:24px 0 8px;}
+    }
   </style>
 </head>
 <body>
-  <div id="container">
-    <div class="logo center">👗 <b>ARCHU & NAZAROV</b></div>
-    <!-- Главное меню -->
-    <div id="main-menu" class="section visible">
-      <div class="menu">
-        <button class="menu-btn" onclick="showSection('catalog')">📦 Каталог</button>
-        <button class="menu-btn" onclick="showSection('lookbook')">📸 Лукбуки</button>
-        <button class="menu-btn" onclick="showSection('faq')">📋 FAQ</button>
-        <button class="menu-btn" onclick="showSection('support')">💬 Поддержка</button>
-        <button class="menu-btn" onclick="showSection('subscribe')">💳 Подписка</button>
-        <button class="menu-btn" onclick="showSection('about')">📣 О нас</button>
+  <div class="wrapper">
+    <header>
+      <div class="logo-3d">ARCHU & NAZAROV</div>
+      <div class="desc">Digital Fashion · Telegram Bots · Demo</div>
+      <nav>
+        <button id="tab-catalog" class="selected">Каталог</button>
+        <button id="tab-lookbook">Лукбук</button>
+        <button id="tab-about">О нас</button>
+      </nav>
+    </header>
+
+    <section id="catalog" class="section active">
+      <div class="card-list">
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=facearea&w=500&h=500&facepad=3" alt="Dress">
+          <div class="c-content">
+            <div class="c-title">Spring Bloom</div>
+            <div class="c-desc">Лёгкое платье из вискозы, премиум-крой, тренд 2025</div>
+            <div class="c-price">8 990 ₽</div>
+            <a class="c-link" href="https://archu.ru/dresses/1" target="_blank">Подробнее</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://get.wallhere.com/photo/women-Cara-Delevingne-blonde-fashion-looking-at-viewer-sports-bra-simple-background-Nike-blue-bras-blue-bra-1373645.jpg" alt="Top">
+          <div class="c-content">
+            <div class="c-title">Minimal Top</div>
+            <div class="c-desc">Классика & комфорт, идеальный топ для города</div>
+            <div class="c-price">4 990 ₽</div>
+            <a class="c-link" href="https://archu.ru/tops/1" target="_blank">Подробнее</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://cdn-images.mn.ru/images/2025/03/smart-cover-2-04-03-25-size_834x556.jpg" alt="Skirt">
+          <div class="c-content">
+            <div class="c-title">Urban Skirt</div>
+            <div class="c-desc">Юбка с разрезом, city style, лето-осень</div>
+            <div class="c-price">5 990 ₽</div>
+            <a class="c-link" href="https://archu.ru/bottoms/1" target="_blank">Подробнее</a>
+          </div>
+        </div>
       </div>
-    </div>
-    <!-- Каталог -->
-    <div id="catalog" class="section">
-      <h1>📦 Каталог</h1>
-      <div class="menu">
-        <button class="menu-btn" onclick="showCatalog('dresses')">👗 Платья</button>
-        <button class="menu-btn" onclick="showCatalog('tops')">👚 Верх</button>
-        <button class="menu-btn" onclick="showCatalog('bottoms')">🩳 Низ</button>
+      <div class="cta">
+        <a class="cta-btn" href="https://t.me/n0zar3k" target="_blank">Заказать такого бота</a>
       </div>
-      <button class="action-btn" onclick="window.open('https://t.me/archu_support', '_blank')">🤖 Заказать бот</button>
-      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
-      <div id="catalog-item" class="center" style="margin-top:16px;"></div>
-    </div>
-    <!-- Лукбуки -->
-    <div id="lookbook" class="section">
-      <h1>📸 Лукбук сезона</h1>
-      <div style="margin-bottom:12px;">
-        1️⃣ <b>City Lights</b> — костюм + платье<br>
-        <a href="https://archu.ru/lookbook1" target="_blank">👁 Смотреть</a>
+    </section>
+
+    <section id="lookbook" class="section">
+      <div class="lookbook-list">
+        <div class="lookbook-card">
+          <img class="lookbook-img" src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=500&q=80" alt="Look 1">
+          <div class="lookbook-title">City Lights — костюм + платье</div>
+          <div class="lookbook-desc">Современный образ большого города. Сочетание тренда и комфорта.</div>
+          <a class="lb-link" href="https://archu.ru/lookbook1" target="_blank">Смотреть</a>
+        </div>
+        <div class="lookbook-card">
+          <img class="lookbook-img" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=500&q=80" alt="Look 2">
+          <div class="lookbook-title">Desert Rose — топ + юбка</div>
+          <div class="lookbook-desc">Тёплый песочный образ для отпусков и городских прогулок.</div>
+          <a class="lb-link" href="https://archu.ru/lookbook2" target="_blank">Смотреть</a>
+        </div>
       </div>
-      <div>
-        2️⃣ <b>Desert Rose</b> — топ + юбка<br>
-        <a href="https://archu.ru/lookbook2" target="_blank">👁 Смотреть</a>
+      <div class="cta">
+        <a class="cta-btn" href="https://t.me/n0zar3k" target="_blank">Заказать такого бота</a>
       </div>
-      <button class="action-btn" onclick="window.open('https://t.me/archu_support', '_blank')">🤖 Заказать бот</button>
-      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
-    </div>
-    <!-- FAQ -->
-    <div id="faq" class="section">
-      <h1>📋 Частые вопросы</h1>
-      <div id="faq-list" class="faq-list"></div>
-      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
-    </div>
-    <div id="faq-ans" class="section">
-      <div class="faq-ans"></div>
-      <button class="back-btn" onclick="showSection('faq')">⬅️ Назад к FAQ</button>
-    </div>
-    <!-- Поддержка -->
-    <div id="support" class="section">
-      <h1>💬 Поддержка</h1>
-      <div class="center" style="margin-bottom:18px;">
-        Напишите нам в <a href="https://t.me/archu_support" target="_blank">Telegram</a> — менеджер ответит лично!
+    </section>
+
+    <section id="about" class="section">
+      <div class="about">
+        <img class="team-logo" src="https://cdn-icons-png.flaticon.com/512/3109/3109888.png" alt="Logo">
+        <h2>ARCHU & NAZAROV</h2>
+        <p>
+          Digital-креаторы и IT-разработчики.<br>
+          Создаём Telegram-боты для бизнеса, автоматизации и вау-презентаций.<br>
+          Fashion, маркетинг, digital art, дизайн и технологии — всё в одном проекте.
+        </p>
+        <div class="socials">
+          <a href="https://t.me/n0zar3k" target="_blank">Telegram @n0zar3k</a>
+          <a href="mailto:n0zar3k@gmail.com">n0zar3k@gmail.com</a>
+        </div>
       </div>
-      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
-    </div>
-    <!-- Подписка -->
-    <div id="subscribe" class="section">
-      <h1>🥳 Демо-подписка активирована!</h1>
-      <div class="center" style="margin-bottom:16px;">
-        • Доступ к закрытым материалам<br>
-        • Оповещения о новинках<br>
-        • Личный менеджер<br><br>
-        Попробуй такого бота для бизнеса 👇
+      <div class="cta">
+        <a class="cta-btn" href="https://t.me/n0zar3k" target="_blank">Заказать такого бота</a>
       </div>
-      <button class="action-btn" onclick="window.open('https://t.me/archu_support', '_blank')">🤖 Заказать бот</button>
-      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
-    </div>
-    <!-- О нас -->
-    <div id="about" class="section">
-      <h1>🌟 О нас</h1>
-      <div class="center" style="margin-bottom:18px;">
-        ARCHU & NAZAROV — digital-креаторы и it-разработчики.<br>
-        Делаем Telegram-боты для продаж и автоматизации.<br><br>
-        Хотите такой же бот для бизнеса? 👇
-      </div>
-      <button class="action-btn" onclick="window.open('https://t.me/archu_support', '_blank')">🤖 Заказать бот</button>
-      <button class="back-btn" onclick="showSection('main-menu')">⬅️ Назад</button>
-    </div>
+    </section>
+
+    <footer>
+      © 2025 ARCHU & NAZAROV · Digital Fashion & Telegram Bots
+    </footer>
   </div>
-
   <script>
-    // FAQ
-    const faqQuestions = [
-      "Как выбрать размер? 🧵", "Какая доставка? 🚚",
-      "Как оформить возврат? ↩️", "Какая ткань используется? 🌿",
-      "Что входит в комплект? 📦", "Как ухаживать за изделием? 🫧",
-      "Как заказать индивидуальный пошив? 👗", "Есть ли скидки? 🎁",
-      "Как отследить заказ? 🔍", "Какие способы оплаты? 💳",
-      "Есть примерка? 🛍️", "Где производится одежда? 🏭",
-      "Можно изменить заказ? ✏️", "Контакты для связи ☎️"
-    ];
-    const faqAnswers = [
-      "🧵 <b>Как выбрать размер?</b><br>Стандартная размерная сетка. Если не уверены — напишите нам в поддержку 💬",
-      "🚚 <b>Доставка</b><br>По всей РФ и СНГ курьером или почтой. Подробнее — на сайте!",
-      "↩️ <b>Возврат</b><br>Товар можно вернуть в течение 14 дней. Просто напишите в поддержку 👩‍💻",
-      "🌿 <b>Ткань</b><br>Только натуральные и премиальные материалы.",
-      "📦 <b>Комплектация</b><br>Товар + инструкция по уходу. Аксессуары — отдельно.",
-      "🫧 <b>Уход</b><br>Ручная стирка, низкие температуры, без отбеливателей.",
-      "👗 <b>Индпошив</b><br>Оставьте заявку в поддержке — дизайнер свяжется с вами!",
-      "🎁 <b>Скидки</b><br>Скидки постоянным и оптовым клиентам. Следите за акциями!",
-      "🔍 <b>Отслеживание</b><br>После отправки выдаём трек-номер.",
-      "💳 <b>Оплата</b><br>Карты, ЮMoney, СБП. Опт — по счёту.",
-      "🛍️ <b>Примерка</b><br>Шоу-рум в Москве — записаться у менеджера.",
-      "🏭 <b>Производство</b><br>Всё шьём сами в России.",
-      "✏️ <b>Изменения</b><br>Пока не отправлено — можно менять. Напишите нам!",
-      "☎️ <b>Контакты</b><br>@archu_support или info@archu.ru"
-    ];
-
-    function showSection(id) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
-      document.getElementById(id).classList.add('visible');
-      if(id==="catalog") {
-        document.getElementById('catalog-item').innerHTML = "";
+    // Табы
+    const tabs = {
+      'tab-catalog': 'catalog',
+      'tab-lookbook': 'lookbook',
+      'tab-about': 'about'
+    }
+    Object.keys(tabs).forEach(id => {
+      document.getElementById(id).onclick = () => {
+        Object.keys(tabs).forEach(j => document.getElementById(j).classList.remove('selected'));
+        document.getElementById(id).classList.add('selected');
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(tabs[id]).classList.add('active');
+        window.scrollTo(0,0);
       }
-    }
-
-    // Каталог
-    function showCatalog(cat) {
-      let html = "";
-      if(cat==="dresses") {
-        html = "👗 <b>Spring Bloom</b><br><br>Лёгкое платье из вискозы<br>💸 <b>Цена:</b> 8990₽<br><a href='https://archu.ru/dresses/1' target='_blank'>👁 Подробнее</a>";
-      } else if(cat==="tops") {
-        html = "👚 <b>Minimal Top</b><br><br>Классика & комфорт<br>💸 <b>Цена:</b> 4990₽<br><a href='https://archu.ru/tops/1' target='_blank'>👁 Подробнее</a>";
-      } else if(cat==="bottoms") {
-        html = "🩳 <b>Urban Skirt</b><br><br>Юбка с разрезом<br>💸 <b>Цена:</b> 5990₽<br><a href='https://archu.ru/bottoms/1' target='_blank'>👁 Подробнее</a>";
-      }
-      document.getElementById('catalog-item').innerHTML = "<div style='margin:18px 0 0 0;'>" + html + "</div>";
-    }
-
-    // FAQ — меню и ответы
-    function renderFAQ() {
-      let html = "";
-      for (let i = 0; i < faqQuestions.length; i++) {
-        html += `<button class="faq-btn" onclick="showFaqAns(${i})">${faqQuestions[i]}</button>`;
-      }
-      document.getElementById('faq-list').innerHTML = html;
-    }
-    function showFaqAns(i) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
-      document.getElementById('faq-ans').classList.add('visible');
-      document.querySelector('.faq-ans').innerHTML = faqAnswers[i];
-    }
-    renderFAQ();
-
-    // Если открыт в Telegram Mini App — уведомим Telegram
-    if(window.Telegram && Telegram.WebApp) {
+    });
+    // Telegram WebApp API
+    if(window.Telegram && Telegram.WebApp){
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
     }
