@@ -2,242 +2,312 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>CLUB BIZARRE — Telegram Mini App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARCHU PREMIUM • Digital App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      height: 100%;
-      margin: 0; padding: 0;
-      background: linear-gradient(135deg, #10111A 60%, #2a2837 100%);
-      overflow-x: hidden;
-      font-family: 'Montserrat', Arial, sans-serif;
+    :root {
+      --dark: #231d19;
+      --rose: #e6b5a2;
+      --beige: #f7ede4;
+      --sand: #e9d6c5;
+      --coffee: #49392f;
+      --caramel: #b6855d;
+      --shadow: 0 8px 36px #c4997c35, 0 1.5px 10px #b6855d28;
     }
-    body::before {
-      content: "";
-      position: fixed; left: 0; top: 0; right: 0; bottom: 0;
-      background: url('https://i.imgur.com/E8ZkU1H.png'), linear-gradient(120deg, #161d29 80%, #201f2a 100%);
-      background-blend-mode: overlay;
-      opacity: .18;
-      pointer-events: none;
-      z-index: 0;
+    html, body {
+      background: var(--dark);
+      margin: 0; padding: 0;
+      font-family: 'Montserrat', Arial, sans-serif;
+      min-height: 100vh;
+      overscroll-behavior-y: none;
+      color: var(--coffee);
+      font-size: 16px;
+    }
+    body {
+      overflow-x: hidden;
+    }
+    #parallax-bg {
+      position: fixed; left:0;top:0;width:100vw;height:120vh;z-index:0;
+      background: linear-gradient(120deg, #f6e9de 30%, #b6855d33 100%);
+      opacity:.55;
+      filter: blur(6px);
+      transition: background 0.4s;
+      will-change: transform;
     }
     #container {
-      max-width: 440px;
+      max-width: 480px;
       margin: 0 auto;
-      padding: 32px 10px 36px 10px;
+      padding: 26px 0 22px 0;
       position: relative;
-      min-height: 99vh;
+      min-height: 100vh;
       z-index: 2;
     }
-    .neon-title {
-      font-family: 'Unbounded', 'Montserrat', Arial, sans-serif;
-      font-size: 2.6em;
-      letter-spacing: 0.08em;
+    .header {
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 900;
+      font-size: 2.18em;
       text-align: center;
-      color: #aee6ff;
-      text-shadow:
-        0 0 5px #00f0ff,
-        0 0 30px #6af5ff,
-        0 2px 8px #b6cfff66,
-        0 1px 0 #222;
-      position: relative;
-      z-index: 2;
-      filter: brightness(1.2) saturate(1.18);
-      animation: flicker 2.1s infinite alternate;
+      color: var(--caramel);
       margin-bottom: 18px;
+      letter-spacing: .09em;
+      text-shadow: 0 8px 26px #c4997c55, 0 2px 0 #fff1;
       user-select: none;
-      background: linear-gradient(90deg, #8fdcff, #3c5dfb 50%, #e15ab8 85%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      opacity: 0;
+      transform: translateY(30px) scale(.98);
+      transition: .5s cubic-bezier(.18,.72,.28,1.15);
     }
-    @keyframes flicker {
-      0%, 100% { filter: blur(0.5px) brightness(1.1); }
-      48% { filter: blur(1.1px) brightness(1.8); }
-      52% { filter: blur(2.6px) brightness(1.65); }
-      55% { filter: blur(0.9px) brightness(1.17); }
+    .fadein {
+      opacity: 1 !important;
+      transform: none !important;
     }
-    .glitch {
-      position: relative;
-      color: #00ecff;
-      text-transform: uppercase;
-      display: inline-block;
-      font-size: 2.15em;
-      font-family: 'Unbounded', Arial, sans-serif;
+    .maincard {
+      background: linear-gradient(120deg, #fff8f3 68%, #f3e5d7 100%);
+      border-radius: 36px;
+      box-shadow: var(--shadow);
+      padding: 24px 18px 24px 18px;
+      margin: 0 10px 26px 10px;
+      border: 1.5px solid var(--sand);
+      display: flex; flex-direction: column; align-items: center; gap: 17px;
+      opacity: 0; transform: translateY(36px) scale(.98);
+      transition: .58s cubic-bezier(.18,.72,.28,1.2);
+      will-change: transform, opacity;
     }
-    .glitch:before, .glitch:after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0; width: 100%; overflow: hidden;
-      color: #ff3fc9;
-      z-index: -1;
-      top: 0;
-    }
-    .glitch:before {
-      text-shadow: 2px 0 #19ecff88;
-      animation: glitchTop 1.3s infinite linear alternate-reverse;
-    }
-    .glitch:after {
-      text-shadow: -2px 0 #fc49b4b3;
-      animation: glitchBot 1.1s infinite linear alternate;
-    }
-    @keyframes glitchTop {
-      0% { clip-path: inset(0 0 80% 0);}
-      60% { clip-path: inset(0 0 60% 0);}
-      100% { clip-path: inset(0 0 70% 0);}
-    }
-    @keyframes glitchBot {
-      0% { clip-path: inset(80% 0 0 0);}
-      65% { clip-path: inset(60% 0 0 0);}
-      100% { clip-path: inset(75% 0 0 0);}
+    .maincard.fadein { opacity: 1; transform: none;}
+    .desc {
+      font-size: 1.13em;
+      color: var(--coffee);
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 2px;
+      letter-spacing: .03em;
+      line-height: 1.4em;
+      opacity:.94;
     }
     .main-btn {
-      display: block;
-      width: 100%;
+      width: 99%; max-width: 360px;
+      padding: 18px 0 14px 0;
+      border-radius: 22px;
+      font-size: 1.15em;
+      font-weight: 900;
       border: none;
-      margin: 18px 0 0 0;
-      padding: 19px 0 16px 0;
-      border-radius: 21px;
-      font-size: 1.24em;
-      letter-spacing: .12em;
-      font-family: 'Unbounded', Arial, sans-serif;
-      background: linear-gradient(100deg, #252842 10%, #1b72c4 67%, #e15ab8 120%);
-      color: #fafaff;
-      box-shadow: 0 1.5px 13px #59bbff33, 0 0.5px 4px #c922ce44;
+      background: linear-gradient(92deg, #e9d6c5 50%, #e6b5a2 100%);
+      color: #322014;
+      margin: 9px 0 0 0;
+      box-shadow: 0 1.5px 16px #e6b5a232;
       cursor: pointer;
-      font-weight: 800;
+      letter-spacing: .11em;
+      transition: filter .13s, background .17s;
+      position: relative;
+      overflow: hidden;
       outline: none;
-      border: 2px solid #1c314d;
-      transition: .18s;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 18px #21f6ff66;
     }
-    .main-btn:active { filter: brightness(1.2) blur(.3px);}
-    .block {
-      margin: 35px auto 0; text-align: center; max-width: 360px;
-      font-size: 1.09em; color: #e8f1fbcc; letter-spacing: .02em;
-      background: rgba(19,22,32,0.81);
-      border-radius: 20px;
-      padding: 21px 10px 18px 10px;
-      box-shadow: 0 2px 8px #39c4f338, 0 0.5px 2.5px #e15ab826;
+    .main-btn:active { filter: brightness(1.08);}
+    .main-btn::after {
+      content: "";
+      position: absolute; left: 50%; top: 50%; width:0;height:0;
+      background: radial-gradient(circle, #e6b5a222 0%, transparent 78%);
+      transform: translate(-50%, -50%);
+      transition: width .22s, height .22s;
+      z-index: 1;
+      pointer-events: none;
     }
-    .block h2 {
-      font-family: 'Unbounded', Arial, sans-serif;
-      color: #7ae5ff;
-      font-size: 1.2em;
-      margin: 0 0 12px;
-      letter-spacing: .12em;
-      text-shadow: 0 1.5px 6px #00f0ffc0;
+    .main-btn:active::after {
+      width: 120%; height: 120%;
     }
-    .nav-row { margin-top: 36px; display: flex; gap:12px; justify-content: center;}
-    .nav-btn {
-      font-family: 'Unbounded', Arial, sans-serif;
-      font-size: 1em; letter-spacing: .08em;
-      border: none; border-radius: 14px;
-      background: linear-gradient(90deg, #282a37, #43aaffcc);
-      color: #e3eaff; padding: 13px 27px;
-      box-shadow: 0 1.5px 5px #25baff21;
-      cursor: pointer; margin-bottom: 2px;
-      transition: .11s;
+    .mini-note {
+      font-size: 1em;
+      color: #b6855d;
+      text-align: center;
+      letter-spacing: .05em;
+      margin-top: 8px;
     }
-    .nav-btn:active { background: #2a2737;}
-    .hint {
-      font-size: .99em; color: #7af7ffb7;
-      margin: 13px 0 0 0; letter-spacing: .07em;
-      font-family: 'Montserrat', Arial, sans-serif;
+    .section {
+      background: #fffaf6;
+      border-radius: 27px;
+      box-shadow: 0 2px 22px #e6b5a235;
+      margin: 19px 10px 0 10px;
+      padding: 19px 13px 19px 13px;
+      opacity: 0; transform: translateY(48px) scale(.98);
+      transition: .48s cubic-bezier(.18,.72,.28,1.12);
+      border: 1.1px solid var(--sand);
+      display: none;
+    }
+    .section.fadein { display:block; opacity:1; transform:none;}
+    .section-title {
+      font-weight: 900; color: var(--caramel);
+      margin-bottom: 9px; font-size: 1.11em;
+      letter-spacing: .06em;
+      text-align: center;
+    }
+    .product-list, .svc-list, .event-list {
+      display: flex; flex-direction: column; gap: 13px; width: 100%;
+    }
+    .product-card, .svc-card, .event-card {
+      background: #f5eee8;
+      border-radius: 15px;
+      box-shadow: 0 1.5px 7px #b6855d16;
+      padding: 13px 11px 11px 12px;
+      font-size: 1em; color: #48382b;
+      display: flex; align-items: center; gap: 14px; justify-content: space-between;
+      border: 1px solid #edd3c1;
+      opacity: 0; transform: translateY(30px);
+      transition: .5s cubic-bezier(.18,.72,.28,1.12);
+    }
+    .product-card.inview, .svc-card.inview, .event-card.inview { opacity: 1; transform: none;}
+    .prod-img { width: 46px; height: 46px; border-radius: 11px; background: #edd3c1; object-fit:cover;}
+    .prod-info { flex: 1;}
+    .prod-title { font-weight: 800; font-size: 1.06em;}
+    .prod-price { font-size: .98em; color: #b6855d; font-weight: 700; margin-top:2px;}
+    .prod-tag { font-size: .93em; padding: 2px 8px; background: #e6b5a255; border-radius: 7px; color: #b6855d; margin-left: 6px;}
+    .buy-btn {
+      background: linear-gradient(90deg,#e6b5a2 60%, #b6855d 130%);
+      border: none; border-radius: 11px; color: #fff;
+      font-weight: 800; padding: 10px 16px; font-size: 1em; cursor:pointer;
+      box-shadow: 0 1.5px 7px #b6855d19;
+      transition: .09s;
+    }
+    .buy-btn:active { background: #b6855d;}
+    .close-btn {
+      background: none; border: none; color: var(--caramel);
+      font-size: 1.19em; margin: 0 0 6px auto; cursor: pointer; align-self: flex-end;
+      font-family: inherit;
     }
     .footer {
-      margin: 52px 0 0 0; color: #7fdcff;
-      text-align: center; font-size: .97em; opacity: .57;
-      letter-spacing: .13em; user-select: none;
-      text-shadow: 0 2px 18px #6dd0ff44;
+      color: #b6855d; text-align: center;
+      font-size: .97em; margin: 36px 0 0 0;
+      letter-spacing: .07em; opacity: .72;
+      user-select: none;
     }
-    .social-row {
-      display: flex; gap:18px; justify-content: center; margin:20px 0 8px 0;
+    @media (max-width: 540px) {
+      .maincard, .section { margin: 0 2vw; }
+      .main-btn { font-size: 1.02em;}
     }
-    .social-btn {
-      background: transparent; border: none; cursor: pointer;
-      font-size: 2.2em; filter: drop-shadow(0 0 7px #29e0ff99);
-      transition:.11s;
-    }
-    .social-btn:active { filter: brightness(1.2) blur(.3px);}
   </style>
 </head>
 <body>
+  <div id="parallax-bg"></div>
   <div id="container">
-    <div class="neon-title"><span class="glitch" data-text="CLUB BIZARRE">CLUB BIZARRE</span></div>
-    <div class="block" id="main">
-      <h2>Private Digital Playground</h2>
-      <div>Только для своих. Глитч-боты, неоновый UX, доступ по инвайту.<br>
-      <span class="hint">Тапай ниже — клуб решает, кто внутри 🌀</span></div>
-      <button class="main-btn" onclick="showPage('about')">🌀 О клубе</button>
-      <button class="main-btn" onclick="showPage('portfolio')">⚡ Портфолио</button>
-      <button class="main-btn" onclick="showPage('contact')">💬 Контакты</button>
-      <button class="main-btn" onclick="showPage('join')">💎 Получить инвайт</button>
+    <div class="header" id="header">ARCHU PREMIUM</div>
+    <div class="maincard" id="mainbox">
+      <div class="desc">
+        Digital-боты, магазины, клубы, NFT.<br>
+        <span style="color:#b6855d;">Стильный digital для бизнеса, инфлюенса, брендов.</span>
+      </div>
+      <button class="main-btn" onclick="showSection('store')">🛒 Магазин</button>
+      <button class="main-btn" onclick="showSection('services')">💡 Digital-сервисы</button>
+      <button class="main-btn" onclick="showSection('events')">📅 Мероприятия</button>
+      <button class="main-btn" onclick="window.open('https://t.me/n0zar3k','_blank')">🔥 Заказать digital-бота</button>
+      <div class="mini-note">Твой digital-консьерж: <b>@n0zar3k</b></div>
     </div>
-    <div class="block" id="about" style="display:none;">
-      <h2>Что такое CLUB BIZARRE?</h2>
-      <div>Тут показывают digital-ботов как искусство. Только самые странные и дерзкие идеи.<br><br>
-        Больше, чем портфолио — это digital-перформанс.<br>
-        <span class="hint">Ощути разницу. Все сценарии — под заказчика.</span>
-      </div>
-      <div class="nav-row">
-        <button class="nav-btn" onclick="showPage('main')">← Меню</button>
-      </div>
-    </div>
-    <div class="block" id="portfolio" style="display:none;">
-      <h2>⚡ Примеры</h2>
-      <div>
-        <b>・Glitch-invite bots</b> — Only by DM<br>
-        <b>・Neon market club</b> — Private Telegram stores<br>
-        <b>・VIP Access scripts</b> — Безопасный вход, NFT, любые роли<br>
-        <span class="hint">Больше в личку — <a href="https://t.me/n0zar3k" style="color:#b93ef8;text-decoration:underline;">@n0zar3k</a></span>
-      </div>
-      <div class="nav-row">
-        <button class="nav-btn" onclick="showPage('main')">← Меню</button>
-      </div>
-    </div>
-    <div class="block" id="contact" style="display:none;">
-      <h2>💬 Контакты</h2>
-      <div>
-        <div class="social-row">
-          <a href="https://t.me/n0zar3k" class="social-btn" title="Telegram">🟦</a>
-          <a href="https://instagram.com/n0zar3k" class="social-btn" title="Instagram">💠</a>
+    <!-- Магазин -->
+    <div class="section" id="store">
+      <button class="close-btn" onclick="showSection('mainbox')">×</button>
+      <div class="section-title">Магазин • Digital-продукты</div>
+      <div class="product-list">
+        <div class="product-card">
+          <img src="https://i.imgur.com/Ff5MhF5.png" class="prod-img"/>
+          <div class="prod-info">
+            <div class="prod-title">Telegram Shop Bot</div>
+            <div class="prod-price">8 900₽ <span class="prod-tag">LIMITED</span></div>
+          </div>
+          <button class="buy-btn" onclick="window.open('https://t.me/n0zar3k','_blank')">Купить</button>
         </div>
-        <div style="margin:12px 0 2px 0;">Пиши, если ты: digital-креатор, бренд или просто ценишь моду странностей.<br>
-        <span class="hint">CLUB BIZARRE — связь всегда личная.</span>
+        <div class="product-card">
+          <img src="https://i.imgur.com/D4tXEiS.png" class="prod-img"/>
+          <div class="prod-info">
+            <div class="prod-title">Клубный Digital-Бот</div>
+            <div class="prod-price">14 900₽ <span class="prod-tag">PREMIUM</span></div>
+          </div>
+          <button class="buy-btn" onclick="window.open('https://t.me/n0zar3k','_blank')">Заказать</button>
         </div>
       </div>
-      <div class="nav-row">
-        <button class="nav-btn" onclick="showPage('main')">← Меню</button>
+    </div>
+    <!-- Digital-сервисы -->
+    <div class="section" id="services">
+      <button class="close-btn" onclick="showSection('mainbox')">×</button>
+      <div class="section-title">Digital-сервисы</div>
+      <div class="svc-list">
+        <div class="svc-card">
+          <div>
+            <div class="prod-title">Digital-бот под ключ</div>
+            <div class="prod-price">индивидуально</div>
+          </div>
+          <button class="buy-btn" onclick="window.open('https://t.me/n0zar3k','_blank')">Заказать</button>
+        </div>
+        <div class="svc-card">
+          <div>
+            <div class="prod-title">Айдентика mini app</div>
+            <div class="prod-price">от 5 900₽</div>
+          </div>
+          <button class="buy-btn" onclick="window.open('https://t.me/n0zar3k','_blank')">Обсудить</button>
+        </div>
       </div>
     </div>
-    <div class="block" id="join" style="display:none;">
-      <h2>💎 Вступить</h2>
-      <div>Доступ через личное одобрение.<br>
-        <span style="color:#f09dee;">Пиши или отправь свой кейс.<br>Digital-приглашение — только избранным.</span>
-      </div>
-      <div class="social-row">
-        <a href="https://t.me/n0zar3k" class="social-btn" title="Telegram">🟦</a>
-      </div>
-      <div class="nav-row">
-        <button class="nav-btn" onclick="showPage('main')">← Меню</button>
+    <!-- Мероприятия -->
+    <div class="section" id="events">
+      <button class="close-btn" onclick="showSection('mainbox')">×</button>
+      <div class="section-title">Сцена / Афиша</div>
+      <div class="event-list">
+        <div class="event-card">
+          <div>
+            <div class="prod-title">Club Demo Live</div>
+            <div class="prod-price">5 июля, 20:00</div>
+          </div>
+          <button class="buy-btn" onclick="window.open('https://t.me/n0zar3k','_blank')">Участвовать</button>
+        </div>
+        <div class="event-card">
+          <div>
+            <div class="prod-title">NFT Drop Night</div>
+            <div class="prod-price">12 июля, 22:30</div>
+          </div>
+          <button class="buy-btn" onclick="window.open('https://t.me/n0zar3k','_blank')">Забронировать</button>
+        </div>
       </div>
     </div>
     <div class="footer">
-      CLUB BIZARRE • n0zar3k demo<br>
-      <span style="font-size:.9em;letter-spacing:.07em;">invite only / glitch style / 2024</span>
+      ARCHU PREMIUM • 2024 demo<br>
+      <span style="font-size:.94em;">premium digital, анимации, парраллакс</span>
     </div>
   </div>
   <script>
-    function showPage(page) {
-      ['main','about','portfolio','contact','join'].forEach(
-        p=>document.getElementById(p).style.display='none');
-      document.getElementById(page).style.display = '';
+    // Плавное появление
+    window.addEventListener('DOMContentLoaded', ()=>{
+      setTimeout(()=>document.getElementById('header').classList.add('fadein'),180);
+      setTimeout(()=>document.getElementById('mainbox').classList.add('fadein'),380);
+    });
+    // Переходы между секциями
+    function showSection(id) {
+      ['mainbox','store','services','events'].forEach(s=>{
+        let el = document.getElementById(s);
+        if(!el) return;
+        el.classList.remove('fadein'); el.style.display = 'none';
+      });
+      let el = document.getElementById(id);
+      el.style.display = 'block'; setTimeout(()=>el.classList.add('fadein'),30);
+      setTimeout(()=>cardObserver(),180);
+      window.scrollTo({top:0, behavior:'smooth'});
     }
-    // Telegram ready
+    // Parallax BG
+    document.addEventListener('scroll', ()=>{
+      let bg = document.getElementById('parallax-bg');
+      let y = window.scrollY || document.documentElement.scrollTop;
+      bg.style.transform = 'translateY('+(y*0.2)+'px)';
+    });
+    // Анимация появления карточек в секциях (при скролле)
+    function cardObserver() {
+      const cards = document.querySelectorAll('.product-card,.svc-card,.event-card');
+      if(!cards.length) return;
+      const cb = (entries, observer)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting) entry.target.classList.add('inview');
+        });
+      };
+      let obs = new IntersectionObserver(cb, {threshold:.15});
+      cards.forEach(card=>{ card.classList.remove('inview'); obs.observe(card); });
+    }
+    // Telegram WebApp ready
     if(window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
